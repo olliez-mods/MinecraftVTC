@@ -1,6 +1,10 @@
 # MinecraftVTC
 MinecraftVTC (MVTC) Stands for Minecraft Voice To Chat and allows you to speak simple voice commands to send chat messages.
 
+IMPORTANT:
+Make sure to speak clearly and (kinda) slowly for the best results as it does not confirm messages before sending them.
+
+
 Instructions for use:
 
 Once you run the program wait until the model loads, this is represented by "-> Start <-" being printed in the console.

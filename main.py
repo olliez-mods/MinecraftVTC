@@ -24,8 +24,12 @@ print(" -> Model Loaded <-")
 
 def block_keys():
     windll.user32.BlockInput(True)
-    keyboardController.release(Key.ctrl)
-    keyboardController.release(Key.shift)
+    # make sure these keys arnt pressed
+    keyboardController.release(Key.ctrl_l)
+    keyboardController.release(Key.ctrl_r)
+    keyboardController.release(Key.shift_l)
+    keyboardController.release(Key.shift_r)
+
 
 def unblock_keys():
     windll.user32.BlockInput(False)
@@ -33,8 +37,8 @@ def unblock_keys():
 def sendcommand(command, text):
     block_keys() # blocka arows keys and control key
     keyboardController.tap("t")
-    time.sleep(0.2)
-    keyboardController.type(command + " " + text_to_type)
+    time.sleep(0.25)
+    keyboardController.type(command + text_to_type)
     time.sleep(0.1)
     keyboardController.tap(Key.enter)
     unblock_keys()
@@ -74,7 +78,7 @@ while(True):
                 del text_by_word[0]
             
             # if the sentence includes cancel we wont send anything
-            if(is_commnd and not ("cancel" in text_by_word)):
+            if(is_commnd):
                 text_to_type = " ".join(text_by_word)
                 if command == "say":
                     print("Saying:", text_to_type)

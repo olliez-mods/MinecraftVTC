@@ -37,6 +37,6 @@ if '%errorlevel%' NEQ '0' (
 
 
 :: Here my actual script starts
-cd /D "%~dp0"
+cd /D "%~dp0/MinecraftVTC"
 python main.py
 pause

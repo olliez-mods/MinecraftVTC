@@ -3,12 +3,16 @@
 # https://alphacephei.com/vosk/models
 #========================
 
+# IMPORTANT:
+# RUN AS ADMIN TO ALLOW BLOCKING THE KEYBOARD
+
 from vosk import Model, KaldiRecognizer
 import pyaudio
 import time
 from pynput.keyboard import Key, Controller
-import keyboard
+from ctypes import windll
 
+# if you want to add more commands, add them first here (or remove them if you don't like them)
 commands = ["say", "shout", "party", "chat"]
 
 keyboardController = Controller()
@@ -19,29 +23,17 @@ model = Model("vosk-model-small-en-us-0.15/vosk-model-small-en-us-0.15")
 print(" -> Model Loaded <-")
 
 def block_keys():
-    global keyboardController
-    keyboardController.release(Key.ctrl_r)
-    keyboard.block_key("control")
-    keyboardController.release(Key.up)
-    keyboard.block_key("up")
-    keyboardController.release(Key.down)
-    keyboard.block_key("down")
-    keyboardController.release(Key.left)
-    keyboard.block_key("left")
-    keyboardController.release(Key.right)
-    keyboard.block_key("right")
+    windll.user32.BlockInput(True)
+    keyboardController.release(Key.ctrl)
+    keyboardController.release(Key.shift)
 
 def unblock_keys():
-    keyboard.unblock_key("control")
-    keyboard.unblock_key("up")
-    keyboard.unblock_key("down")
-    keyboard.unblock_key("left")
-    keyboard.unblock_key("right")
+    windll.user32.BlockInput(False)
 
 def sendcommand(command, text):
     block_keys() # blocka arows keys and control key
     keyboardController.tap("t")
-    time.sleep(0.25)
+    time.sleep(0.2)
     keyboardController.type(command + " " + text_to_type)
     time.sleep(0.1)
     keyboardController.tap(Key.enter)
@@ -80,13 +72,9 @@ while(True):
                 is_commnd = True
                 command = text_by_word[0]
                 del text_by_word[0]
-            elif(text_by_word[1] in commands):
-                is_commnd = True
-                command = text_by_word[1]
-                del text_by_word[1]
-                del text_by_word[0]
             
-            if(is_commnd):
+            # if the sentence includes cancel we wont send anything
+            if(is_commnd and not ("cancel" in text_by_word)):
                 text_to_type = " ".join(text_by_word)
                 if command == "say":
                     print("Saying:", text_to_type)
@@ -102,7 +90,7 @@ while(True):
                     sendcommand("/ac", text_to_type)
                     
 
-
+        # we expect index errors it's ok
         except IndexError as e:
             pass
         except Exception as e:
